@@ -6,13 +6,14 @@ import Dashboard from './pages/Dashboard'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 
+import Header from './components/Header';
 
 function App() {
   return (
     <BrowserRouter>
-    <div className="flex justify-around pt-4 text-3xl font-bold">
-        <h1>Mern Blog Project</h1>
-      </div>
+
+    <Header/>
+    
     <Routes>
       <Route path="/"  element={<Home/>} />
       <Route path="/about"  element={<About/>} />
