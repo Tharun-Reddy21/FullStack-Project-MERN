@@ -1,7 +1,6 @@
 import mongoose from 'mongoose'
-import { stringify } from 'querystring'
 
-const userSchema = new mongoose.userSchema({
+const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,

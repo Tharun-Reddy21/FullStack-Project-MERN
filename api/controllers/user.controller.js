@@ -1,0 +1,8 @@
+
+
+
+export const test=(req,res)=>{
+    res.json({
+        message:"Api test response is working"
+    })
+};

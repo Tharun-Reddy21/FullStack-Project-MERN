@@ -5,7 +5,8 @@ dotenv.config({quiet : true});
 
 import mongoose from 'mongoose'
 
-
+import userRouter from './routes/user.routes.js'
+import authRouter from './routes/auth.routes.js'
 
 const app = express();
 
@@ -21,3 +22,9 @@ mongoose.connect(
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+//middleware to parse data to json
+app.use(express.json());
+
+app.use('/api/user',userRouter);
+app.use('/api/auth',authRouter);
