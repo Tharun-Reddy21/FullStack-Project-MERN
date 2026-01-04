@@ -14,8 +14,7 @@ export default function Header() {
       <div className="flex items-center justify-between w-full">
         <Link
           to="/"
-          className="flex items-center gap-0.5 text-sm sm:text-xl font-bold text-white"
-        >
+          className="flex items-center gap-0.5 text-sm sm:text-xl font-bold text-white">
           <span className="bg-violet-900 px-2 pt-1 pb-1.5 text-white gap-0.5 rounded-2xl w-fit">Blog</span>
           Posts
         </Link>
