@@ -9,13 +9,14 @@ export default function Header() {
   const [showSearch, setShowSearch] = useState(false);
 
   return (
-    <nav className="bg-blue-800 border-b p-1">
-      <div className="flex items-center justify-between">
+    <nav className="bg-blue-800 border-b p-1 font-sans  min-w-[300px]">
+      
+      <div className="flex items-center justify-between w-full">
         <Link
           to="/"
           className="flex items-center gap-0.5 text-sm sm:text-xl font-bold text-white"
         >
-          <span>Blog</span>
+          <span className="bg-violet-900 px-2 pt-1 pb-1.5 text-white gap-0.5 rounded-2xl w-fit">Blog</span>
           Posts
         </Link>
 
@@ -23,7 +24,7 @@ export default function Header() {
           <TextInput
             type="text"
             placeholder="search ..."
-            className="w-50 h-10"
+            className="w-full h-10"
             rightIcon={AiOutlineSearch}
             
           />
@@ -59,10 +60,10 @@ export default function Header() {
             </Button>
           </Link>
 
+          {/*search icon for small screen */}
           <button
             onClick={() => setShowSearch(!showSearch)}
-            className="md:hidden text-white text-xl"
-          >
+            className="md:hidden text-white text-xl">
             <AiOutlineSearch />
           </button>
 
@@ -76,7 +77,7 @@ export default function Header() {
       </div>
 
       {showSearch && (
-        <div className="md:hidden mt-2">
+        <div className="md:hidden mt-2 ">
           <TextInput
             type="text"
             placeholder="search ..."
@@ -86,7 +87,8 @@ export default function Header() {
       )}
 
       {open && (
-        <div className="md:hidden mt-2 font-semibold flex flex-col gap-3 border-t border-blue-600 pt-2">
+        <div className="md:hidden mt-2 font-semibold flex flex-col gap-3 border-t
+         border-blue-600 pt-2 bg-gray-900 items-center">
           <Link to="/" onClick={() => setOpen(false)} className="text-white">
             Home
           </Link>
