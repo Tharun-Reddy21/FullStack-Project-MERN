@@ -1,6 +1,7 @@
 import { Link ,useNavigate} from "react-router-dom";
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import OAuth from "../components/OAuth";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -81,8 +82,7 @@ export default function SignUp() {
         <div className="font-serif pl-14 md:p-3">
           <Link
             to="/"
-            className="flex items-center gap-0.5 text-4xl font-bold text-white"
-          >
+            className="flex items-center gap-0.5 text-4xl font-bold text-white">
             <span className="bg-violet-900 px-2 pt-1 pb-2.5 rounded-2xl w-fit">
               Blog
             </span>
@@ -97,8 +97,7 @@ export default function SignUp() {
               <div className="flex items-center gap-4">
                 <label
                   htmlFor="username"
-                  className="w-24 text-white text-xl font-semibold"
-                >
+                  className="w-24 text-white text-xl font-semibold">
                   Username
                 </label>
                 <input
@@ -106,15 +105,14 @@ export default function SignUp() {
                   onChange={handleOnChange}
                   type="text"
                   placeholder="Enter username"
-                  className="flex-1 border-2 border-gray-400 rounded-lg p-2 bg-white text-black"
-                />
+                  className="flex-1 border-2 border-gray-400 
+                  rounded-lg p-2 bg-white text-black"/>
               </div>
 
               <div className="flex items-center gap-4">
                 <label
                   htmlFor="email"
-                  className="w-24 text-white text-xl font-semibold"
-                >
+                  className="w-24 text-white text-xl font-semibold">
                   Email
                 </label>
                 <input
@@ -122,15 +120,14 @@ export default function SignUp() {
                   onChange={handleOnChange}
                   type="email"
                   placeholder="Enter email"
-                  className="flex-1 border border-gray-700 rounded-lg p-2 bg-white text-black"
-                />
+                  className="flex-1 border border-gray-700
+                   rounded-lg p-2 bg-white text-black"/>
               </div>
 
               <div className="flex items-center gap-4">
                 <label
                   htmlFor="password"
-                  className="w-24 text-white text-xl font-semibold"
-                >
+                  className="w-24 text-white text-xl font-semibold">
                   Password
                 </label>
                 <div className="relative flex-1">
@@ -139,18 +136,15 @@ export default function SignUp() {
                     onChange={handleOnChange}
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter password"
-                    className="w-full border-2 border-gray-400 rounded-lg p-2 pr-10 bg-white text-black"
-                  />
+                    className="w-full border-2 border-gray-400 
+                    rounded-lg p-2 pr-10 bg-white text-black"/>
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-2 flex items-center text-gray-600"
-                  >
-                    {showPassword ? (
-                      <AiOutlineEye size={18} />
-                    ) : (
-                      <AiOutlineEyeInvisible size={18} />
-                    )}
+                    className="absolute inset-y-0 right-2 flex items-center text-gray-600">
+                    {showPassword ? 
+                    (<AiOutlineEye size={18} />) : 
+                    (<AiOutlineEyeInvisible size={18} />)}
                   </button>
                 </div>
               </div>
@@ -158,8 +152,7 @@ export default function SignUp() {
               <div className="flex items-center gap-4">
                 <label
                   htmlFor="role"
-                  className="w-24 text-white text-xl font-semibold"
-                >
+                  className="w-24 text-white text-xl font-semibold">
                   Role
                 </label>
 
@@ -177,24 +170,20 @@ export default function SignUp() {
                     shadow-sm
                     transition-all duration-200
                     focus:outline-none focus:ring-2
-                    focus:ring-indigo-500 focus:border-indigo-500
-                  "
-                />
+                    focus:ring-indigo-500 focus:border-indigo-500"/>
               </div>
 
-              {errorMessage && (
-                <p className="text-red-500 text-sm">{errorMessage}</p>
-              )}
+              {errorMessage && ( <p className="text-red-500 text-sm">{errorMessage}</p>)}
 
               <button
                 type="submit"
                 disabled={loading}
                 className="mt-4 bg-blue-600 hover:bg-blue-700
                  text-white font-semibold py-2 rounded-lg
-                  transition duration-200 disabled:opacity-60"
-              >
+                  transition duration-200 disabled:opacity-60">
                 {loading ? "Submitting..." : "Submit"}
               </button>
+              <OAuth/>
             </div>
           </form>
 

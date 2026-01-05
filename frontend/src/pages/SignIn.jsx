@@ -4,6 +4,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 import { signInStart,signInSuccess,signInFail } from "../redux/user/userSlice.js";
 import {useDispatch,useSelector} from 'react-redux';
+import OAuth from "../components/OAuth.jsx";
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -53,6 +54,7 @@ export default function SignIn() {
 
       if (!data.ok) {
         dispatch(signInFail(result.message));
+        return;
       }
 
       console.log("Sign In success:", result);
@@ -60,8 +62,9 @@ export default function SignIn() {
         dispatch(signInSuccess(result));
         navigate('/');
       }
-    } catch (err) {
-        dispatch(signInFail(result.message));
+    } 
+    catch (err) {
+        dispatch(signInFail(result.message || "Something went wrong !!"));
     }
   }
 
@@ -71,8 +74,7 @@ export default function SignIn() {
         <div className="font-serif pl-14 md:p-3">
           <Link
             to="/"
-            className="flex items-center gap-0.5 text-4xl font-bold text-white"
-          >
+            className="flex items-center gap-0.5 text-4xl font-bold text-white">
             <span className="bg-violet-900 px-2 pt-1 pb-2.5 rounded-2xl w-fit">
               Blog
             </span>
@@ -128,19 +130,18 @@ export default function SignIn() {
 
               
 
-              {errorMessage && (
-                <p className="text-red-500 text-sm">{errorMessage}</p>
-              )}
+              {errorMessage && 
+              (<p className="text-red-500 text-sm">*{errorMessage}</p>)}
 
               <button
                 type="submit"
                 disabled={loading}
                 className="mt-4 bg-blue-600 hover:bg-blue-700
                  text-white font-semibold py-2 rounded-lg
-                  transition duration-200 disabled:opacity-60"
-              >
+                  transition duration-200 disabled:opacity-60">
                 {loading ? "Signing In..." : "Sign In"}
               </button>
+              <OAuth/>
             </div>
           </form>
 
