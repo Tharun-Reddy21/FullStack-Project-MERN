@@ -1,21 +1,39 @@
 import { useState } from "react";
 import { Button, TextInput } from "flowbite-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineSearch, AiOutlineMenu } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
+
+import { useSelector } from "react-redux";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+
+  const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await fetch("/api/auth/signout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    navigate("/sign-in");
+    window.location.reload();
+  };
 
   return (
-    <nav className="bg-blue-800 border-b p-1 font-sans  min-w-[300px]">
-      
+    <nav className="bg-blue-800 border-b p-1 font-sans min-w-[300px]">
       <div className="flex items-center justify-between w-full">
         <Link
           to="/"
-          className="flex items-center gap-0.5 text-sm sm:text-xl font-bold text-white">
-          <span className="bg-violet-900 px-2 pt-1 pb-1.5 text-white gap-0.5 rounded-2xl w-fit">Blog</span>
+          className="flex items-center gap-0.5 text-sm sm:text-xl font-bold text-white"
+        >
+          <span className="bg-violet-900 px-2 pt-1 pb-1.5 text-white rounded-2xl w-fit">
+            Blog
+          </span>
           Posts
         </Link>
 
@@ -25,44 +43,87 @@ export default function Header() {
             placeholder="search ..."
             className="w-full h-10"
             rightIcon={AiOutlineSearch}
-            
           />
-          
         </form>
 
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-4 font-semibold">
-            <Link to="/" className="text-white ">
+            <Link to="/" className="text-white">
               Home
             </Link>
-            <Link to="/about" className="text-white ">
+            <Link to="/about" className="text-white">
               About
             </Link>
-            <Link to="/sign-up" className="text-white ">
+            <Link to="/sign-up" className="text-white">
               Sign Up
             </Link>
           </div>
 
           <Button
-            className="hidden md:inline-flex w-12 h-8 
-            transition-transform hover:scale-105"
+            className="hidden md:inline-flex w-12 h-8 transition-transform hover:scale-105"
             color="gray"
             pill
           >
             <FaMoon />
           </Button>
 
-          <Link to="/sign-in" className="hidden md:block">
-            <Button className="bg-fuchsia-200 text-blue-950 w-16 h-8
-             hover:bg-fuchsia-300 hover:text-black">
-              SignIn
-            </Button>
-          </Link>
+          {currentUser ? (
+            <div className="relative hidden md:block">
+              <img
+                src={currentUser.profilePic}
+                alt="profile"
+                className="w-9 h-9 rounded-full cursor-pointer border"
+                onClick={() => setProfileOpen((prev) => !prev)}/>
 
-          {/*search icon for small screen */}
+              {profileOpen && (
+                <div
+                  className="absolute right-0 mt-2
+                 w-56 bg-white rounded-md font-sans
+                 shadow-lg z-50 text-black ">
+                  <div
+                    className="px-4 py-4 border-b 
+                  flex flex-col justify-center items-center ">
+                    <p className="text-xs font-semibold py-1">
+                      {currentUser.username}
+                    </p>
+                    <p
+                      className="text-xs text-gray-700 truncate
+                     font-semibold py-1 max-w-50">
+                      {currentUser.email}
+                    </p>
+                  </div>
+                  <div className="flex flex-col justify-center items-center ">
+                    <Link
+                      to="/dashboard?tab=profile"
+                      className="w-full px-4 py-1 text-md text-center
+                       font-semibold hover:bg-gray-300"
+                      onClick={() => setProfileOpen(false)}>
+                      Profile
+                    </Link>
+
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full px-4 pb-2 text-md text-center
+                        text-red-600 hover:bg-gray-300 font-semibold
+                        rounded-md overflow-hidden">
+                      Sign out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link to="/sign-in" className="hidden md:block">
+              <Button className="bg-fuchsia-200 text-blue-950 w-16 h-8 hover:bg-fuchsia-300">
+                SignIn
+              </Button>
+            </Link>
+          )}
+
           <button
             onClick={() => setShowSearch(!showSearch)}
-            className="md:hidden text-white text-xl">
+            className="md:hidden text-white text-xl"
+          >
             <AiOutlineSearch />
           </button>
 
@@ -76,7 +137,7 @@ export default function Header() {
       </div>
 
       {showSearch && (
-        <div className="md:hidden mt-2 ">
+        <div className="md:hidden mt-2">
           <TextInput
             type="text"
             placeholder="search ..."
@@ -86,18 +147,29 @@ export default function Header() {
       )}
 
       {open && (
-        <div className="md:hidden mt-2 font-semibold flex flex-col gap-3 border-t
-         border-blue-600 pt-2 bg-gray-900 items-center">
+        <div className="md:hidden mt-2 font-semibold flex flex-col gap-3 border-t border-blue-600 pt-2 bg-gray-900 items-center">
           <Link to="/" onClick={() => setOpen(false)} className="text-white">
             Home
           </Link>
-          <Link to="/about" onClick={() => setOpen(false)} className="text-white">
+          <Link
+            to="/about"
+            onClick={() => setOpen(false)}
+            className="text-white"
+          >
             About
           </Link>
-          <Link to="/sign-up" onClick={() => setOpen(false)} className="text-white">
+          <Link
+            to="/sign-up"
+            onClick={() => setOpen(false)}
+            className="text-white"
+          >
             Sign Up
           </Link>
-          <Link to="/sign-in" onClick={() => setOpen(false)} className="text-white">
+          <Link
+            to="/sign-in"
+            onClick={() => setOpen(false)}
+            className="text-white"
+          >
             Sign In
           </Link>
         </div>
