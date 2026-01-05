@@ -2,6 +2,9 @@ import { Link ,useNavigate} from "react-router-dom";
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
+import { signInStart,signInSuccess,signInFail } from "../redux/user/userSlice.js";
+import {useDispatch,useSelector} from 'react-redux';
+
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -9,8 +12,13 @@ export default function SignIn() {
 
   const navigate = useNavigate();
 
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const dispatch =useDispatch();
+  const {loading,error:errorMessage} = useSelector(state=>state.user);
+
+
+  // const [errorMessage, setErrorMessage] = useState(null);
+  // const [loading, setLoading] = useState(false);
+
 
   const lowercaseFields = ["email"];
 
@@ -25,8 +33,6 @@ export default function SignIn() {
 
   async function handleOnSubmit(e) {
     e.preventDefault();
-    setErrorMessage(null);
-    setLoading(true);
 
     const payload = {
       ...formData,
@@ -35,6 +41,7 @@ export default function SignIn() {
     };
 
     try {
+      dispatch(signInStart());
       const data = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -45,19 +52,16 @@ export default function SignIn() {
       const result = await data.json();
 
       if (!data.ok) {
-        setErrorMessage(result.message || "Sign In failed");
-        setLoading(false);
-        return;
+        dispatch(signInFail(result.message));
       }
 
       console.log("Sign In success:", result);
-      setLoading(false);
       if(data.ok){
+        dispatch(signInSuccess(result));
         navigate('/');
       }
     } catch (err) {
-      setErrorMessage("Request failed");
-      setLoading(false);
+        dispatch(signInFail(result.message));
     }
   }
 
