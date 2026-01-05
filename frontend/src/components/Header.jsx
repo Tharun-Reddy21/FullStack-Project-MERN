@@ -4,10 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineSearch, AiOutlineMenu } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
 
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+import { toggleTheme } from "../redux/theme/themeSlice.js";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
   const [showSearch, setShowSearch] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
@@ -58,9 +60,11 @@ export default function Header() {
               Sign Up
             </Link>
           </div>
-
+          {/*.................. Theme change Button........................... */}
           <Button
-            className="hidden md:inline-flex w-12 h-8 transition-transform hover:scale-105"
+            onClick={()=>dispatch(toggleTheme())}
+            className="hidden md:inline-flex w-12 h-8
+             transition-transform hover:scale-105"
             color="gray"
             pill
           >
