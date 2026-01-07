@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { Link, useNavigate } from "react-router-dom";
 import {updateStart,updateSuccess,updateFail} from "../redux/user/userSlice.js";
+import { deleteUserStart,deleteUserSuccess,deleteUserFail } from "../redux/user/userSlice.js";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 
@@ -59,16 +60,20 @@ export default function DashProfile() {
   const handleDeleteUser = async () => {
     setShowModal(false);
     try {
+
+      dispatch(deleteUserStart());
       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
         method: "DELETE",
-        credentials: "include",
-      });
-
-      if (res.ok) {
-        navigate("/sign-in");
+        credentials: "include",});
+        const data = await res.json();
+      if (!res.ok){
+        dispatch(deleteUserFail(data.message));
+      }
+      else{
+        dispatch(deleteUserSuccess(data));
       }
     } catch (err) {
-      console.log(err.message);
+        dispatch(deleteUserFail(err.message));
     }
   };
 
@@ -120,7 +125,7 @@ export default function DashProfile() {
 
   return (
     <div className="max-w-lg mx-auto p-3 w-full font-sans">
-      <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
+      <h1 className="my-7 text-center font-bold text-3xl">Profile</h1>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
@@ -148,7 +153,7 @@ export default function DashProfile() {
         <button
           disabled={loading}
           className="border rounded-md py-2 font-semibold text-gray-100
-          bg-blue-600 hover:bg-blue-700 ">
+          bg-blue-600 hover:bg-blue-700 cursor-pointer">
           {loading ? "Updating ..." : "Update"}
         </button>
 
@@ -157,7 +162,7 @@ export default function DashProfile() {
             <button
               type="button"
               className="w-full bg-blue-600 text-white py-2 font-semibold
-              border rounded-md  hover:bg-blue-700">
+              border rounded-md  hover:bg-blue-700 cursor-pointer">
               Create a post
             </button>
           </Link>
@@ -167,12 +172,12 @@ export default function DashProfile() {
       <div className="flex justify-between text-red-600 mt-5 ">
         <button onClick={() => setShowModal(true)}
             className="bg-gray-300 rounded-sm font-semibold px-2 w-fit 
-            hover:bg-white border-red-800 border"
-            >Delete Account</button>
+            hover:bg-white border-red-800 border cursor-pointer">
+              Delete Account</button>
         <button onClick={() => setShowSignoutModal(true)}
             className="bg-gray-300 rounded-sm font-semibold  px-2 w-fit
-            hover:bg-white  border-red-800 border"
-            >Sign Out</button>
+            hover:bg-white  border-red-800 border cursor-pointer">
+              Sign Out</button>
       </div>
 
       {updateUserSuccess && (
@@ -188,19 +193,19 @@ export default function DashProfile() {
           <div className="bg-white  text-black p-6 rounded-lg w-80 text-center">
             <HiOutlineExclamationCircle className="w-12 h-12 mx-auto text-gray-400 mb-4" />
             <p className="mb-6 font-semibold">
-              Are you sure you want to delete your account?
+              Are you sure you want to delete your account ?
             </p>
             <div className="flex justify-center gap-4 font-semibold">
               <button
                 onClick={handleDeleteUser}
-                className="px-4 py-2 bg-red-600 text-white rounded font-semibold"
-              >
+                className="px-4 py-2 bg-red-600 text-white
+                 rounded font-semibold hover:bg-red-800">
                 Yes
               </button>
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 font-semibold bg-gray-300 rounded"
-              >
+                className="px-4 py-2 font-semibold bg-gray-300 rounded
+                hover:bg-gray-500">
                 Cancel
               </button>
             </div>
@@ -221,14 +226,13 @@ export default function DashProfile() {
                   setShowSignoutModal(false);
                   handleSignout();
                 }}
-                className="px-4 py-2 bg-red-600 text-white rounded font-semibold"
-              >
+                className="px-4 py-2 bg-red-600 text-white rounded font-semibold
+                hover:bg-red-800">
                 Yes
               </button>
               <button
                 onClick={() => setShowSignoutModal(false)}
-                className="px-4 py-2 font-semibold bg-gray-300 rounded"
-              >
+                className="px-4 py-2 font-semibold bg-gray-300 rounded hover:bg-gray-500">
                 Cancel
               </button>
             </div>
