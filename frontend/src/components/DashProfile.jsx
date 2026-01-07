@@ -167,11 +167,11 @@ export default function DashProfile() {
       <div className="flex justify-between text-red-600 mt-5 ">
         <button onClick={() => setShowModal(true)}
             className="bg-gray-300 rounded-sm font-semibold px-2 w-fit 
-            hover:bg-white border-red-800 border-2"
+            hover:bg-white border-red-800 border"
             >Delete Account</button>
         <button onClick={() => setShowSignoutModal(true)}
             className="bg-gray-300 rounded-sm font-semibold  px-2 w-fit
-            hover:bg-white  border-red-800 border-2"
+            hover:bg-white  border-red-800 border"
             >Sign Out</button>
       </div>
 
