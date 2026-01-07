@@ -1,7 +1,6 @@
 function About() {
   return (
-    <h3>About</h3>
-  )
+    <div className="min-h-screen">About</div>  )
 }
 
 export default About

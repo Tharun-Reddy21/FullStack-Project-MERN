@@ -48,57 +48,67 @@ export default function DashSidebar() {
       className="
         bg-white border-b sm:border-b-0 sm:border-r border-gray-200
         rounded-b-lg sm:rounded-none
-        w-full sm:w-[20vw] sm:min-w-60 sm:max-w-[320px]
-      "
-    >
+        w-full sm:w-[20vw] sm:min-w-60 sm:max-w-[320px]">
       <nav
         className="
-          flex flex-row flex-wrap sm:flex-col
+          flex flex-wrap sm:flex-col
           gap-1 p-2
           h-auto sm:h-screen
-          overflow-visible sm:overflow-y-auto
-        "
-      >
-        {currentUser?.isAdmin && (
-          <Link to="/dashboard?tab=dash" className={itemClass(tab === 'dash' || !tab)}>
+          overflow-visible sm:overflow-y-auto">
+
+        {/* PROFILE */}
+        <Link
+          to="/dashboard?tab=profile"
+          className={`${itemClass(tab === 'profile')} w-full sm:w-auto`}>
+          <HiUser className="text-lg shrink-0" />
+          <span>Profile</span>
+
+          <span className="ml-1 text-xs bg-gray-300 px-2 py-0.5 rounded">
+            {currentUser?.role=='admin' ? 'admin' : 'user'}
+          </span>
+        </Link>
+
+        {currentUser?.role=='admin' && (
+          <Link
+            to="/dashboard?tab=dash"
+            className={itemClass(tab === 'dash' || !tab)}>
             <HiChartPie className="text-lg shrink-0" />
             <span>Dashboard</span>
           </Link>
         )}
 
-        <Link to="/dashboard?tab=profile" className={itemClass(tab === 'profile')}>
-          <HiUser className="text-lg shrink-0" />
-          <span>Profile</span>
-          <span className="ml-1 text-xs bg-gray-300 px-2 py-0.5 rounded">
-            {currentUser?.isAdmin ? 'Admin' : 'User'}
-          </span>
-        </Link>
-
-        {currentUser?.isAdmin && (
-          <Link to="/dashboard?tab=posts" className={itemClass(tab === 'posts')}>
+        {currentUser?.role=='admin' && (
+          <Link
+            to="/dashboard?tab=posts"
+            className={itemClass(tab === 'posts')}>
             <HiDocumentText className="text-lg shrink-0" />
             <span>Posts</span>
           </Link>
         )}
 
-        {currentUser?.isAdmin && (
-          <>
-            <Link to="/dashboard?tab=users" className={itemClass(tab === 'users')}>
-              <HiOutlineUserGroup className="text-lg shrink-0" />
-              <span>Users</span>
-            </Link>
-
-            <Link to="/dashboard?tab=comments" className={itemClass(tab === 'comments')}>
-              <HiAnnotation className="text-lg shrink-0" />
-              <span>Comments</span>
-            </Link>
-          </>
+        {currentUser?.role=='admin' && (
+          <Link
+            to="/dashboard?tab=users"
+            className={itemClass(tab === 'users')}>
+            <HiOutlineUserGroup className="text-lg shrink-0" />
+            <span>Users</span>
+          </Link>
         )}
 
+        {currentUser?.role=='admin' && (
+          <Link
+            to="/dashboard?tab=comments"
+            className={itemClass(tab === 'comments')}>
+            <HiAnnotation className="text-lg shrink-0" />
+            <span>Comments</span>
+          </Link>
+        )}
+
+        {/* SIGN OUT */}
         <button
           onClick={handleSignout}
-          className={`${baseItem} text-red-600 hover:bg-red-50 sm:mt-auto`}
-        >
+          className={`${baseItem} text-red-600
+           hover:bg-red-50 w-full sm:w-auto sm:mt-auto`}>
           <HiArrowSmRight className="text-lg shrink-0" />
           <span>Sign Out</span>
         </button>
