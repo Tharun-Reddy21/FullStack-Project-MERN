@@ -41,6 +41,19 @@ export const updateUser = async (req, res, next) => {
   }
 
   if (req.body.email) {
+    if (req.body.email.length < 5 || req.body.email.length > 20) {
+      return next(errorHandler(400, 'email must be between 5 and 20 characters'));
+    }
+    if (req.body.email.includes(' ')) {
+      return next(errorHandler(400, 'email must not contain spaces'));
+    }
+    if (!req.body.email.includes('@gmail.com')) {
+      return next(errorHandler(400, 'email must contain @gmail.com'));
+    }
+    if (req.body.email !== req.body.email.toLowerCase()) {
+      return next(errorHandler(400, 'email must be in lowercase'));
+    }
+
     updateFields.email = req.body.email;
   }
 
