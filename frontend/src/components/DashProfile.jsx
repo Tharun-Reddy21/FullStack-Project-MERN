@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { Link, useNavigate } from "react-router-dom";
-import {updateStart,updateSuccess,updateFail} from "../redux/user/userSlice.js";
+import {updateStart,updateSuccess,updateFail, signOutSuccess} from "../redux/user/userSlice.js";
 import { deleteUserStart,deleteUserSuccess,deleteUserFail } from "../redux/user/userSlice.js";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -79,15 +79,22 @@ export default function DashProfile() {
 
   const handleSignout = async () => {
     try {
-      await fetch("/api/user/signout", {
+      const res = await fetch("/api/user/signout", {
         method: "POST",
         credentials: "include",
       });
-      navigate("/sign-in");
+      const data = await res.json();
+      if (!res.ok){console.log(data.message);}
+      else{
+        dispatch(signOutSuccess(data));
+        navigate("/sign-in");
+      }
+      
     } catch (err) {
       console.log(err.message);
     }
   };
+
   //use effect for removing the update or error message after updating user details
   useEffect(() => {
     if (updateUserSuccess) {

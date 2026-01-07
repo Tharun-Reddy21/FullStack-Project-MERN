@@ -2,12 +2,14 @@ import { errorHandler } from "../utils/error.js";
 import bcryptjs from 'bcryptjs';
 import User from "../models/user.model.js";
 
-
-export const test=(req,res)=>{
+//test route 
+export const test=(res)=>{
     res.json({
         message:"Api test response is working"
     })
 };
+
+//updating user details to database
 
 export const updateUser = async (req, res, next) => {
   if (req.user.id !== req.params.userId) {
@@ -70,6 +72,8 @@ export const updateUser = async (req, res, next) => {
   }
 };
 
+//delete user from database completely
+
 export const deleteUser = async (req, res, next) => {
   try {
     if (!req.user || req.user.id.toString() !== req.params.userId) {
@@ -82,4 +86,16 @@ export const deleteUser = async (req, res, next) => {
     next(error);
   }
 };
+
+//signout user by removing cookie data of user
+
+export const signoutUser = async (req, res, next) => {
+  try {
+    res.clearCookie('access_token').status(200)
+    .json('User has been signed out');
+  } catch (error) {
+    next(error)
+  }
+
+}
 

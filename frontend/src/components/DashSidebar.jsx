@@ -1,18 +1,14 @@
-import {
-  HiUser,
-  HiArrowSmRight,
-  HiDocumentText,
-  HiOutlineUserGroup,
-  HiAnnotation,
-  HiChartPie,
-} from 'react-icons/hi';
+import {HiUser,HiArrowSmRight,HiDocumentText,
+  HiOutlineUserGroup,HiAnnotation,HiChartPie} from 'react-icons/hi';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
+import { signOutSuccess } from '../redux/user/userSlice.js';
 
 export default function DashSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user || {});
   const [tab, setTab] = useState('');
 
@@ -23,16 +19,22 @@ export default function DashSidebar() {
   }, [location.search]);
 
   const handleSignout = async () => {
-    try {
-      await fetch('/api/user/signout', {
-        method: 'POST',
-        credentials: 'include',
-      });
-      navigate('/sign-in');
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+      try {
+        const res = await fetch("/api/user/signout", {
+          method: "POST",
+          credentials: "include",
+        });
+        const data = await res.json();
+        if (!res.ok){console.log(data.message);}
+        else{
+          dispatch(signOutSuccess(data));
+          navigate("/sign-in");
+        }
+        
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
 
   const baseItem =
     'flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition whitespace-nowrap';
@@ -107,7 +109,7 @@ export default function DashSidebar() {
         {/* SIGN OUT */}
         <button
           onClick={handleSignout}
-          className={`${baseItem} text-red-600
+          className={`${baseItem} text-red-600 cursor-pointer
            hover:bg-red-50 w-full sm:w-auto sm:mt-auto`}>
           <HiArrowSmRight className="text-lg shrink-0" />
           <span>Sign Out</span>

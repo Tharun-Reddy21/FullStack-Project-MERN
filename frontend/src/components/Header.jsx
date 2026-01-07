@@ -3,6 +3,7 @@ import { Button, TextInput } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineSearch, AiOutlineMenu } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
+import { signOutSuccess } from '../redux/user/userSlice.js';
 
 import { useSelector,useDispatch } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice.js";
@@ -16,18 +17,26 @@ export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
 
-  const handleSignOut = async () => {
-    await fetch("/api/auth/signout", {
-      method: "POST",
-      credentials: "include",
-    });
-
-    navigate("/sign-in");
-    window.location.reload();
-  };
+  const handleSignout = async () => {
+      try {
+        const res = await fetch("/api/user/signout", {
+          method: "POST",
+          credentials: "include",
+        });
+        const data = await res.json();
+        if (!res.ok){console.log(data.message);}
+        else{
+          dispatch(signOutSuccess(data));
+          navigate("/sign-in");
+        }
+        
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
 
   return (
-    <nav className="bg-blue-800 border-b p-1 font-sans min-w-[300px]">
+    <nav className="bg-blue-800 border-b p-1 font-sans min-w-75">
       <div className="flex items-center justify-between w-full">
         <Link
           to="/"
@@ -106,7 +115,7 @@ export default function Header() {
                     </Link>
 
                     <button
-                      onClick={handleSignOut}
+                      onClick={handleSignout}
                       className="w-full px-4 pb-2 text-md text-center
                         text-red-600 hover:bg-gray-300 font-semibold
                         rounded-md overflow-hidden">
