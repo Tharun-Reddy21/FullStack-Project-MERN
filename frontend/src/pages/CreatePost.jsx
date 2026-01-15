@@ -2,7 +2,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function CreatePost() {
 
@@ -14,13 +14,9 @@ function CreatePost() {
     extensions: [
       StarterKit,
       TextAlign.configure({
-        types: ["heading", "paragraph"],
-      }),
-    ],
+        types: ["paragraph"],}),],
     content: "<p>&nbsp;</p>",
-    onUpdate: ({ editor }) => {
-      setIsEditorEmpty(editor.isEmpty);
-    },
+    onUpdate: ({ editor }) => {setIsEditorEmpty(editor.isEmpty);},
   });
 
   const [image, setImage] = useState(null);
@@ -28,40 +24,54 @@ function CreatePost() {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
 
-const handleUploadImage = async () => {
-  if (!image) {
-    setUploadError("Please select an image first");
-    return;
+  if (!currentUser) {
+  setUploadError("You must be logged in to upload images");
+  return;
   }
 
-  setUploading(true);
-  setUploadError(null);
-
-  const formData = new FormData();
-  formData.append("image", image);
-
-  try {
-    const res = await fetch("/api/post/upload-image", {
-      method: "POST",
-      body: formData,
-      credentials: "include",
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      setUploadError(data.message || "Image upload failed");
-      setUploading(false);
+  const handleUploadImage = async () => {
+      if (!image) {
+      setUploadError("Please select an image first");
       return;
     }
 
-    setImageUrl(data.imageUrl);
-    setUploading(false);
-  } catch (error) {
-    setUploadError("Image upload failed");
-    setUploading(false);
-  }
-};
+    setUploading(true);
+    setUploadError(null);
+
+    const formData = new FormData();
+    formData.append("image", image);
+
+    try {
+      const res = await fetch("/api/post/upload-image", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setUploadError(data.message || "Image upload failed");
+        setUploading(false);
+        return;}
+
+      setImageUrl(data.imageUrl);
+      setUploading(false);
+    } 
+    catch (error) {
+      setUploadError(error || "** Image upload failed");
+      setUploading(false);}
+  };
+
+  useEffect(() => {
+    if (!uploadError) return;
+
+    const timer = setTimeout(() => {
+      setUploadError("");
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [uploadError]);
 
 
   return (
@@ -74,12 +84,9 @@ const handleUploadImage = async () => {
           <form
             className="flex flex-col gap-4"
             onSubmit={(e) => {
-              if (!editor || editor.isEmpty) {
-                e.preventDefault();
-                alert("Post content is required");
-              }
-            }}
-          >
+              if(!editor || editor.isEmpty) {
+                e.preventDefault();                }
+                const content = editor.getHTML();}}>
 
             <div className="flex flex-col gap-4 sm:flex-row justify-baseline ">
               <input
@@ -87,10 +94,10 @@ const handleUploadImage = async () => {
                 className="flex-1 text-black rounded-md font-semibold bg-gray-300"
                 placeholder="Title"
                 required
-                id="title"
-              />
+                id="title"/>
+ 
               <select className="border rounded-md py-2 px-7 text-black bg-gray-300 font-semibold">
-                <option value="uncatogorized">Select a category</option>
+                <option value="uncategorized">Select a category</option>
                 <option value="frontend">Frontend</option>
                 <option value="backend">Backend</option>
                 <option value="database">Database</option>
@@ -98,7 +105,7 @@ const handleUploadImage = async () => {
                 <option value="devops">DevOps</option>
               </select>
             </div>
-
+  
             <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center 
             border-2 border-dotted p-3 rounded-md w-full opacity-90">
               <input
@@ -118,13 +125,10 @@ const handleUploadImage = async () => {
               </button>
             </div>
 
-            {uploadError && (
-              <p className="text-sm text-red-600">{uploadError}</p>
-            )}
+            {uploadError && (<p className="text-sm text-red-600">{uploadError}</p>)}
 
             {imageUrl && (
-              <img src={imageUrl} alt="uploaded" className="h-24 rounded-md" />
-            )}
+              <p className="text-sm text-green-600">!! Image uploaded successfully</p>)}
 
             <div>
               <style>
@@ -206,7 +210,7 @@ const handleUploadImage = async () => {
 
             <button
               type="submit"
-              disabled={isEditorEmpty}
+              disabled={isEditorEmpty || uploading}
               className="w-full sm:w-auto px-6 py-2
               bg-blue-600 text-white font-semibold rounded-md
               hover:bg-blue-700 focus:outline-none disabled:opacity-50">
