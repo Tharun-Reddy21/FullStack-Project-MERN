@@ -8,10 +8,13 @@ import postRouter from "./routes/post.route.js";
 
 import cookieParser from "cookie-parser";
 
+import path from "path";
+
 dotenv.config({ quiet: true });
 
 const app = express();
 
+app.use("/uploads",express.static(path.join(process.cwd(), "uploads")));
 
 app.use(express.json());
 app.use(cookieParser());

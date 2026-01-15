@@ -1,4 +1,7 @@
 import { errorHandler } from "../utils/error.js";
+import Post from "../models/post.model.js";
+
+
 
 export const createPost = async (req, res, next) => {
   if (req.user.role !== "user") {
@@ -15,6 +18,7 @@ export const createPost = async (req, res, next) => {
     ...req.body,
     slug,
     userId: req.user.id,
+    image: req.file ? `/uploads/${req.file.filename}` : "",
   });
 
   try {
