@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 
 import userRouter from "./routes/user.routes.js";
 import authRouter from "./routes/auth.routes.js";
+import postRouter from "./routes/post.route.js";
 
 import cookieParser from "cookie-parser";
 
@@ -17,6 +18,7 @@ app.use(cookieParser());
 
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/post", postRouter);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
