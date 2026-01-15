@@ -19,6 +19,7 @@ export default function Header() {
 
   const handleSignout = async () => {
       try {
+        setProfileOpen(false);
         const res = await fetch("/api/user/signout", {
           method: "POST",
           credentials: "include",
@@ -27,6 +28,7 @@ export default function Header() {
         if (!res.ok){console.log(data.message);}
         else{
           dispatch(signOutSuccess(data));
+          
           navigate("/sign-in");
         }
         
