@@ -37,10 +37,10 @@ export default function DashSidebar() {
     };
 
   const baseItem =
-    'flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition whitespace-nowrap';
+    'flex items-center gap-2 px-3 py-2 rounded-md text-sm  transition whitespace-nowrap';
 
-  const active = 'bg-gray-200 text-gray-900';
-  const inactive = 'text-gray-600 hover:bg-gray-100';
+  const active = 'bg-gray-400 text-gray-900 font-bold';
+  const inactive = 'text-gray-600 hover:bg-gray-100 font-semibold';
 
   const itemClass = (isActive) =>
     `${baseItem} ${isActive ? active : inactive}`;
@@ -48,14 +48,12 @@ export default function DashSidebar() {
   return (
     <aside
       className="
-        bg-white border-b sm:border-b-0 sm:border-r border-gray-200
+        bg-gray-200 border-b sm:border-b-0 sm:border-r border-gray-200
         rounded-b-lg sm:rounded-none
         w-full sm:w-[20vw] sm:min-w-60 sm:max-w-[320px]">
       <nav
         className="
-          flex flex-wrap sm:flex-col
-          gap-1 p-2
-          h-auto sm:h-screen
+          flex flex-wrap sm:flex-col gap-2 p-2 h-auto sm:h-screen
           overflow-visible sm:overflow-y-auto">
 
         {/* PROFILE */}
@@ -109,8 +107,8 @@ export default function DashSidebar() {
         {/* SIGN OUT */}
         <button
           onClick={handleSignout}
-          className={`${baseItem} text-red-600 cursor-pointer
-           hover:bg-red-50 w-full sm:w-auto sm:mt-auto`}>
+          className={`${baseItem} text-red-700 cursor-pointer font-semibold
+           hover:bg-red-100 hover:font-bold w-full sm:w-auto sm:mt-auto`}>
           <HiArrowSmRight className="text-lg shrink-0" />
           <span>Sign Out</span>
         </button>

@@ -3,11 +3,14 @@ import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { useNavigate} from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 function CreatePost() {
+
   const { currentUser } = useSelector((state) => state.user);
+
   const [isEditorEmpty, setIsEditorEmpty] = useState(true);
+
   const [formData, setFormdata] = useState({});
 
   const editor = useEditor({
@@ -25,6 +28,7 @@ function CreatePost() {
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [postSubmitError, setPostSubmitError] = useState(null);
   const [postSubmitSuccess, setPostSubmitSuccess] = useState(false);
+  const [Submiting, setSubmiting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -33,7 +37,7 @@ function CreatePost() {
     return;
   }
 
-  const handleUploadImage = async () => {
+  const handleUploadImage = () => {
     if (!image) {
       setUploadError("Please select an image first");
       return;
@@ -42,33 +46,10 @@ function CreatePost() {
     setUploading(true);
     setUploadError(null);
 
-    const imgData = new FormData();
-    imgData.append("image", image);
-
-    try {
-      const res = await fetch("/api/post/upload-image", {
-        method: "POST",
-        body: imgData,
-        credentials: "include",
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setUploadError(data.message || "Image upload failed");
-        setUploading(false);
-        return;
-      }
-
-      setImageUrl(data.imageUrl);
-      setIsImageUploaded(true);
-      setFormdata((prev) => ({ ...prev, image: data.imageUrl }));
-      setUploading(false);
-    } 
-    catch (error) {
-      setUploadError(error || "** Image upload failed");
-      setUploading(false);
-    }
+    const previewUrl = URL.createObjectURL(image);
+    setImageUrl(previewUrl);
+    setIsImageUploaded(true);
+    setUploading(false);
   };
 
   useEffect(() => {
@@ -77,50 +58,54 @@ function CreatePost() {
     return () => clearTimeout(timer);
   }, [uploadError]);
 
-  const handleSubmit = async (e) =>{
-      
-    if (!editor || editor.isEmpty) e.preventDefault();
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const finalData = {
-      ...formData,
-      content: editor.getHTML(),
-    };
-    //console.log(finalData);
+    if (!editor || editor.isEmpty) return;
+    if (!image || !isImageUploaded) {
+      setPostSubmitError("Please upload an image");
+      return;
+    }
+
+    setUploading(true);
+    setSubmiting(true);
+
+    const data = new FormData();
+    data.append("title", formData.title);
+    data.append("category", formData.category);
+    data.append("content", editor.getHTML());
+    data.append("image", image);
 
     try {
-      const res = await fetch('/api/post/create-post',{
-        method:'POST',
-        credentials: 'include',
-        headers:{
-          'Content-Type':'application/json'
-        },
-        body:JSON.stringify(finalData)
-      })
+      const res = await fetch("/api/post/create-post", {
+        method: "POST",
+        body: data,
+        credentials: "include",
+      });
 
-      const data = await res.json();
-      if(!res.ok){
-        setPostSubmitError(data.message);
-        return
-      }
-      if(res.ok) {
-        setPostSubmitError(null);
-        setPostSubmitSuccess(true);
+      const result = await res.json();
 
-        const timer = setTimeout(() => {
-          navigate('/');
-        }, 6000);
-
-        return () => clearTimeout(timer);
+      if (!res.ok) {
+        setPostSubmitError(result.message);
+        setUploading(false);
+        return;
       }
 
+      setPostSubmitError(null);
+      setPostSubmitSuccess(true);
+      setUploading(false);
+      setSubmiting(false);
 
+      const timer = setTimeout(() => {
+        navigate(`/post/${result.slug}`);
+      }, 2000);
+
+      return () => clearTimeout(timer);
     } catch (error) {
-      setPostSubmitError(error || "** Something went wrong");
+      setPostSubmitError("Something went wrong");
+      setUploading(false);
     }
-              
-  }
-  
+  };
 
   return (
     <>
@@ -129,20 +114,25 @@ function CreatePost() {
 
           <h1 className="text-center text-3xl my-7 font-semibold">Create a post</h1>
 
-          <form
-            className="flex flex-col gap-4"
-            onSubmit={handleSubmit}>
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
 
             <div className="flex flex-col gap-4 sm:flex-row justify-baseline ">
+
               <input
                 type="text"
                 className="flex-1 text-black rounded-md font-semibold bg-gray-300"
-                placeholder="Title" required id="title"
-                onChange={(e) => setFormdata({ ...formData, title: e.target.value })} />
+                placeholder="Title"
+                required
+                id="title"
+                onChange={(e) =>
+                  setFormdata({ ...formData, title: e.target.value })
+                }/>
 
               <select
                 className="border rounded-md py-2 px-7 text-black bg-gray-300 font-semibold"
-                onChange={(e) => setFormdata({ ...formData, category: e.target.value })}>
+                onChange={(e) =>
+                  setFormdata({ ...formData, category: e.target.value })
+                }>
                 <option value="uncategorized">Select a category</option>
                 <option value="frontend">Frontend</option>
                 <option value="backend">Backend</option>
@@ -152,7 +142,8 @@ function CreatePost() {
               </select>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center border-2 border-dotted p-3 rounded-md w-full opacity-90">
+            <div className="flex flex-col sm:flex-row gap-4 items-stretch 
+            sm:items-center border-2 border-dotted p-3 rounded-md w-full opacity-90">
               <input
                 type="file"
                 accept="image/*"
@@ -162,71 +153,115 @@ function CreatePost() {
                   setImageUrl(null);
                   setUploadError(null);
                 }}
-                className="w-full sm:flex-1 min-w-0 text-sm cursor-pointer pl-1 file:mr-4 file:py-2 file:px-4 file:rounded-md file:bg-blue-600 file:text-white hover:file:bg-blue-700 h-8" />
+                className="w-full sm:flex-1 min-w-0 text-sm cursor-pointer
+                 pl-1 file:mr-4 file:py-2 file:px-4 file:rounded-md file:bg-blue-600
+                  file:text-white hover:file:bg-blue-700 h-8"/>
 
               <button
                 type="button"
                 onClick={handleUploadImage}
                 disabled={uploading || isImageUploaded}
-                className="w-full sm:w-auto px-4 py-auto bg-blue-600 text-gray-100 font-semibold rounded-md hover:bg-blue-700 whitespace-nowrap h-8 disabled:opacity-50">
-                {isImageUploaded ? "Image Uploaded" : uploading ? "Uploading..." : "Upload Image"}
+                className="w-full sm:w-auto px-4 py-auto bg-blue-600
+                 text-gray-100 font-semibold rounded-md hover:bg-blue-700 
+                 whitespace-nowrap h-8 disabled:opacity-50">
+                {isImageUploaded
+                  ? "Image Uploaded"
+                  : uploading
+                  ? "Uploading..."
+                  : "Upload Image"}
               </button>
             </div>
 
-            {uploadError && <p className="text-sm text-red-600">{uploadError}</p>}
-            {imageUrl && <p className="text-sm text-green-600">!! Image uploaded successfully</p>}
+            {uploadError && (<p className="text-sm text-red-600">{uploadError}</p>)}
+            {imageUrl && (
+              <p className="text-sm text-green-600">!! Image uploaded successfully</p>)}
 
             <div>
-
               <style>
                 {`.ProseMirror ul { list-style-type: disc; padding-left: 1.5rem; }
                 .ProseMirror ol { list-style-type: decimal; padding-left: 1.5rem; }
                 .ProseMirror li { margin: 0.25rem 0; }`}
-                </style>
+              </style>
 
               <div className="flex gap-2 mb-2 border rounded-md p-2 bg-gray-300 ">
-                <button type="button" onClick={() => editor.chain().focus().toggleBold().run()} 
-                className={`px-2 text-gray-900 font-bold rounded ${editor.isActive("bold") ? "bg-blue-600" : "bg-gray-500"}`}>
-                  B</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()} 
-                className={`px-2 text-gray-900 font-semibold rounded ${editor.isActive("italic") ? "bg-blue-600" : "bg-gray-500"}`}>
-                  I</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()} 
-                className={`px-2 text-gray-900 font-bold rounded ${editor.isActive("bulletList") ? "bg-blue-600" : "bg-gray-500"}`}>
-                  • List</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()} 
-                className={`px-2 text-gray-900 font-bold rounded ${editor.isActive("orderedList") ? "bg-blue-600" : "bg-gray-500"}`}>
-                  1. List</button>
-                <button type="button" onClick={() => editor.chain().focus().setTextAlign("left").run()} 
-                className={`px-2 text-gray-900 font-bold rounded ${editor.isActive({ textAlign: "left" }) ? "bg-blue-600" : "bg-gray-500"}`}>
-                  Start text</button>
-                <button type="button" onClick={() => editor.chain().focus().setTextAlign("center").run()} 
-                className={`px-2 text-gray-900 font-bold rounded ${editor.isActive({ textAlign: "center" }) ? "bg-blue-600" : "bg-gray-500"}`}>
-                  Center text</button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    editor.chain().focus().toggleBold().run()  }
+                  className={`px-2 text-gray-900 font-bold rounded ${
+                    editor.isActive("bold")  ? "bg-blue-600"  : "bg-gray-500"
+                  }`} >
+                  B
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    editor.chain().focus().toggleItalic().run()}
+                  className={`px-2 text-gray-900 font-semibold rounded ${
+                    editor.isActive("italic")  ? "bg-blue-600"  : "bg-gray-500"  }`}>
+                  I
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    editor.chain().focus().toggleBulletList().run()}
+                  className={`px-2 text-gray-900 font-bold rounded ${
+                    editor.isActive("bulletList")  ? "bg-blue-600"  : "bg-gray-500"
+                  }`}
+                >
+                  • List
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    editor.chain().focus().toggleOrderedList().run()
+                  }
+                  className={`px-2 text-gray-900 font-bold rounded ${
+                    editor.isActive("orderedList")  ? "bg-blue-600"  : "bg-gray-500"
+                  }`}>
+                  1. List
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    editor.chain().focus().setTextAlign("left").run()}
+                  className={`px-2 text-gray-900 font-bold rounded ${
+                    editor.isActive({ textAlign: "left" })  ? "bg-blue-600"  : "bg-gray-500"
+                  }`}>
+                  Start text
+                </button>
+                <button type="button"
+                  onClick={() =>
+                    editor.chain().focus().setTextAlign("center").run()}
+                  className={`px-2 text-gray-900 font-bold rounded ${
+                    editor.isActive({ textAlign: "center" })? "bg-blue-600": "bg-gray-500"
+                  }`}>
+                  Center text
+                </button>
               </div>
 
-              <div className={`h-auto sm:h-16 mb-12 w-full border rounded-md bg-gray-300 text-gray-900 p-3 overflow-y-auto focus-within:outline-none focus-within:ring-1 ${isEditorEmpty ? "ring-1 ring-red-500" : "focus-within:ring-blue-500"}`}>
-                <EditorContent editor={editor} className="outline-none" />
+              <div
+                className={`h-auto sm:h-16 mb-12 w-full border rounded-md bg-gray-300 text-gray-900 p-3 overflow-y-auto focus-within:outline-none focus-within:ring-1 ${
+                  isEditorEmpty? "ring-1 ring-red-500": "focus-within:ring-blue-500"}`}>
+                <EditorContent editor={editor} className="outline-none"/>
               </div>
             </div>
 
-            <button type="submit" disabled={isEditorEmpty || uploading}
-             className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white 
-             font-semibold rounded-md hover:bg-blue-700 focus:outline-none disabled:opacity-50">
-              Submit Post
+            <button type="submit"
+              disabled={isEditorEmpty || uploading}
+              className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white 
+              font-semibold rounded-md hover:bg-blue-700 focus:outline-none disabled:opacity-50">
+              {Submiting === true ? "Submitting ..." : "Submit Post"}
             </button>
           </form>
 
-          {postSubmitError && (
-          <p className="text-red-700 mt-2">{postSubmitError}</p>)}
+          {postSubmitError && (<p className="text-red-700 mt-2">{postSubmitError}</p>)}
           {postSubmitSuccess && (
             <div>
-              <p className="text-green-600 mt-2 font-serif">!! Post submitted successfully</p>
-              <p className="text-gray-300 text-sm mt-1font-serif">Redirecting to Homepage in 6 seconds ...</p>
+              <p className="text-green-600 mt-2 font-serif">  !! Post submitted successfully</p>
+              <p className="text-gray-300 text-sm mt-1font-serif">Redirecting in 2 seconds ...</p>
             </div>
           )}
-          
-           
         </div>
       )}
     </>
