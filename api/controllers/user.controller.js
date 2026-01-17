@@ -99,3 +99,42 @@ export const signoutUser = async (req, res, next) => {
 
 }
 
+export const getUsers = async (req, res, next) => {
+  if(req.user.role !== 'admin'){
+    return next(errorHandler(403,'You are not an admin'));
+  }
+  try {
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    const limit = parseInt(req.query.limit) || 9;
+    const sortDirection = req.query.sort === 'asc' ? 1 : -1;
+
+    const now = new Date();
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+
+    const [users, totalUsers, lastMonthUsers] = await Promise.all([
+      User.find()
+        .select('-password')
+        .sort({ createdAt: sortDirection })
+        .skip(startIndex)
+        .limit(limit),
+
+      User.countDocuments(),
+
+      User.countDocuments({createdAt: { $gte: oneMonthAgo },}),
+    ]);
+
+    res.status(200).json({
+      users,            
+      totalUsers,
+      lastMonthUsers,});
+    console.log(users,totalUsers,lastMonthUsers);
+    
+  } catch (error) {
+    next(error);
+  }
+
+}
