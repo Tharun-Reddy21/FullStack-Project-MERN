@@ -63,8 +63,8 @@ export default function DashSidebar() {
           <HiUser className="text-lg shrink-0" />
           <span>Profile</span>
 
-          <span className="ml-1 text-xs bg-gray-300 px-2 py-0.5 rounded">
-            {currentUser?.role=='admin' ? 'admin' : 'user'}
+          <span className="ml-10 text-xs bg-gray-300 px-2 py-0.5 rounded">
+            {currentUser?.role}
           </span>
         </Link>
 
@@ -77,7 +77,7 @@ export default function DashSidebar() {
           </Link>
         )}
 
-        {currentUser?.role=='admin' && (
+        {currentUser?.role !=='user' && (
           <Link
             to="/dashboard?tab=posts"
             className={itemClass(tab === 'posts')}>
@@ -86,7 +86,7 @@ export default function DashSidebar() {
           </Link>
         )}
 
-        {currentUser?.role=='admin' && (
+        {currentUser?.role !=='user' && (
           <Link
             to="/dashboard?tab=users"
             className={itemClass(tab === 'users')}>
@@ -95,7 +95,7 @@ export default function DashSidebar() {
           </Link>
         )}
 
-        {currentUser?.role=='admin' && (
+        {currentUser?.role !=='user' && (
           <Link
             to="/dashboard?tab=comments"
             className={itemClass(tab === 'comments')}>
