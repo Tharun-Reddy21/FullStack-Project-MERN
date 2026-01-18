@@ -131,10 +131,8 @@ export const getUsers = async (req, res, next) => {
       users,            
       totalUsers,
       lastMonthUsers,});
-    console.log(users,totalUsers,lastMonthUsers);
     
-  } catch (error) {
-    next(error);
-  }
-
+  } 
+  catch (error) {
+    next(error);}
 }
