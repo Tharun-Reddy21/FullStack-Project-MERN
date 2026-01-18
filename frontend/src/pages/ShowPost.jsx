@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import CommentSection from "../components/CommentSection";
 
 function ShowPost() {
   const { postSlug } = useParams();
@@ -68,8 +69,13 @@ function ShowPost() {
         border-b border-slate-500 sm:max-w-3xl sm:mx-auto"/>
 
       <div
-        className="p-3 max-w-4xl mx-auto w-full post-content font-sans"
+        className="p-3 max-w-4xl mx-auto w-full post-content font-sans
+         border-b border-slate-500 "
         dangerouslySetInnerHTML={{ __html: post && post.content }}>
+      </div>
+
+      <div className=" ">
+        <CommentSection postId={post._id}/>
       </div>
 
     </main>

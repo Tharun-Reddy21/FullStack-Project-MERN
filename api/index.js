@@ -5,10 +5,11 @@ import mongoose from "mongoose";
 import userRouter from "./routes/user.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import postRouter from "./routes/post.route.js";
+import commentRouter from "./routes/comment.routes.js";
 
 import cookieParser from "cookie-parser";
 
-import path from "path";
+// import path from "path";
 
 dotenv.config({ quiet: true });
 
@@ -21,6 +22,8 @@ app.use(cookieParser());
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/post", postRouter);
+app.use("/api/comment", commentRouter);
+
 
 //for errors 
 app.use((err, req, res, next) => {

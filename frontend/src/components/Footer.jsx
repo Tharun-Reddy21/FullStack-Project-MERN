@@ -18,17 +18,13 @@ export default function Footer() {
 
           <div className="grid grid-cols-2 gap-8 mt-4 sm:grid-cols-3 sm:gap-6">
             <div>
-              <h2 className="mb-3 text-sm font-bold text-gray-900 uppercase dark:text-white">
-                About
-              </h2>
-              <ul className="text-gray-500 dark:text-gray-400">
+              <h2 className="mb-3 text-sm font-bold uppercase text-white">
+                About </h2>
+                
+              <ul className="text-gray-400">
                 <li className="mb-2">
-                  <a
-                    href=""
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:underline"
-                  >
+                  <a  href=""  target="_blank"  rel="noopener noreferrer"
+                    className="hover:underline">
                     Projects
                   </a>
                 </li>

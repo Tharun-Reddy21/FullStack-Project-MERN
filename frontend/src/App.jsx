@@ -19,6 +19,7 @@ import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
 import CreatePost from "./pages/CreatePost";
 import ShowPost from "./pages/ShowPost";
+import ScrollTop from "./components/ScrollTop";
 
 function OAuthRedirectHandler() {
   const auth = getAuth(app);
@@ -59,6 +60,8 @@ function OAuthRedirectHandler() {
 function App() {
   return (
     <BrowserRouter>
+
+      <ScrollTop/>
       <OAuthRedirectHandler />
 
       <Header />
