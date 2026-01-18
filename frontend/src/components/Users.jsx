@@ -8,6 +8,7 @@ function Users() {
   const [showModal, setShowModal] = useState(false);
   const [userIdTodelete,setUserIdToDelete] = useState('');
   const [showMore,setShowMore] = useState(true);
+  const [userDeleted,setUserDeleted] = useState(false);
 
   useEffect(() => {
     if (!currentUser?._id) return;
@@ -36,15 +37,17 @@ function Users() {
     setShowModal(false);
     try {
       
-      const res = await fetch(`/api/user/delete-user/${userIdTodelete}/${currentUser._id}`,
+      const res = await fetch(`/api/user/delete/${userIdTodelete}`,
         {method: 'DELETE',credentials: "include" });
       const data = await res.json();
       if(!res.ok){
         console.log(data.message);
       }
       else{
-        setUserPosts((prev) =>
-          prev.filter((post) => post._id !== postTodelete));
+        setUsers((prev) =>
+          prev.filter((user) => user._id !== userIdTodelete));
+          setShowModal(false);
+          setUserDeleted(true);
       }
 
     } catch (error) {
@@ -60,7 +63,7 @@ function Users() {
       const data = await res.json();
       if(res.ok){
         setUsers((prev)=>[...prev,...data.users]);
-        if(data.users.length<6){
+        if(data.users.length<8){
           setShowMore(false);
         }
       }
@@ -74,7 +77,7 @@ function Users() {
   return (
     <div className="p-auto sm:p-10 overflow-x-auto">
       <h1 className="text-center pb-3.5 text-2xl font-semibold">Users Registered</h1>
-
+      {userDeleted && <p className="text-red-700 p-2 font-semibold">** User deleted successfully</p>}
       {currentUser?.role !== "user" && users.length > 0 ? (
         <div className="flex justify-center flex-col overflow-x-auto">
         <table className="p-2.5 w-full border font-sans">
@@ -110,6 +113,7 @@ function Users() {
                   <button onClick={()=>{
                     setShowModal(true);
                     setUserIdToDelete(user._id);
+                    setUserDeleted(false);
                   }}
                     className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
                     Delete </button>

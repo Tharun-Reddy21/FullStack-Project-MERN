@@ -7,14 +7,12 @@ import {Provider} from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
 //for theme change 
-import  ThemeProvider  from './components/ThemeProvider.jsx';
+//import  ThemeProvider  from './components/ThemeProvider.jsx';
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <ThemeProvider>
           <App />
-        </ThemeProvider>
       </PersistGate>
     </Provider>
 )

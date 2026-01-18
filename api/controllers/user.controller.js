@@ -76,7 +76,11 @@ export const updateUser = async (req, res, next) => {
 
 export const deleteUser = async (req, res, next) => {
   try {
-    if (!req.user || req.user.id.toString() !== req.params.userId) {
+    if (
+      !req.user ||
+      (req.user.role !== 'admin' &&
+        req.user.id.toString() !== req.params.userId)
+    ) {
       return next(errorHandler(403, 'You are not allowed to delete'));
     }
 
@@ -86,6 +90,7 @@ export const deleteUser = async (req, res, next) => {
     next(error);
   }
 };
+
 
 //signout user by removing cookie data of user
 
@@ -99,13 +104,14 @@ export const signoutUser = async (req, res, next) => {
 
 }
 
+//fro admin to see users
 export const getUsers = async (req, res, next) => {
   if(req.user.role !== 'admin'){
     return next(errorHandler(403,'You are not an admin'));
   }
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
-    const limit = parseInt(req.query.limit) || 9;
+    const limit = parseInt(req.query.limit) || 8;
     const sortDirection = req.query.sort === 'asc' ? 1 : -1;
 
     const now = new Date();

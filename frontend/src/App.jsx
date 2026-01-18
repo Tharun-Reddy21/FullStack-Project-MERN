@@ -18,6 +18,7 @@ import Footer from "./components/Footer";
 
 import PrivateRoute from "./components/PrivateRoute";
 import CreatePost from "./pages/CreatePost";
+import ShowPost from "./pages/ShowPost";
 
 function OAuthRedirectHandler() {
   const auth = getAuth(app);
@@ -73,6 +74,9 @@ function App() {
        
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+
+        <Route path="/post/:postSlug" element={<ShowPost />} />
+        
       </Routes>
 
       <Footer />

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 function Posts() {
   const { currentUser } = useSelector((state) => state.user);
@@ -8,6 +9,7 @@ function Posts() {
   const [showModal, setShowModal] = useState(false);
   const [postTodelete,setPostToDelete] = useState('');
   const [showMore,setShowMore] = useState(true);
+    const [postDeleted,setPostDeleted] = useState(false);
 
   useEffect(() => {
     if (!currentUser?._id) return;
@@ -46,6 +48,7 @@ function Posts() {
       else{
         setUserPosts((prev) =>
           prev.filter((post) => post._id !== postTodelete));
+          setPostDeleted(true);
       }
 
     } catch (error) {
@@ -74,13 +77,14 @@ function Posts() {
 
   return (
     <div className="p-auto sm:p-10 ">
-      <h1 className="text-center pb-3.5 text-2xl font-semibold">Blog posts</h1>
+      <h1 className="text-center pb-4 text-2xl font-semibold">Blog posts</h1>
+      {postDeleted && <p className="text-red-700 p-2 self-center font-semibold">** Post deleted successfully</p>}
 
       {currentUser?.role !== "user" && userPosts.length > 0 ? (
         <div className="flex justify-center flex-col overflow-x-auto">
         <table className="p-2.5 w-full border font-sans">
           <thead>
-            <tr className="bg-gray-300 text-gray-900">
+            <tr className="bg-gray-300 text-gray-900 ">
               <th className="border p-2">Date Uploaded</th>
               <th className="border p-2">Blog Image</th>
               <th className="border p-2">Blog Title</th>
@@ -97,11 +101,20 @@ function Posts() {
                 </td>
 
                 <td className="border p-2">
+                  <Link to={`/post/${post.slug}`}>
                   <img  src={post.image}  alt={post.title}
-                    className="w-24 h-14 object-cover mx-auto rounded"/>
+                    className="w-24 h-14 object-cover mx-auto rounded md:hover:scale-105"/>
+                  </Link>
+                  
                 </td>
 
-                <td className="border p-2">{post.title}</td>
+                <td className="border p-2">
+                  <Link
+                      className='font-medium text-gray-200'
+                      to={`/post/${post.slug}`}>
+                      {post.title}
+                    </Link>
+                  </td>
 
                 <td className="border p-2">{post.category}</td>
 
@@ -109,6 +122,7 @@ function Posts() {
                   <button onClick={()=>{
                     setShowModal(true);
                     setPostToDelete(post._id);
+                    setPostDeleted(false);
                   }}
                     className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
                     Delete </button>
