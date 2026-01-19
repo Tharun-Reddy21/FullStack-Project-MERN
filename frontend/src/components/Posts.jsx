@@ -9,7 +9,7 @@ function Posts() {
   const [showModal, setShowModal] = useState(false);
   const [postTodelete,setPostToDelete] = useState('');
   const [showMore,setShowMore] = useState(true);
-    const [postDeleted,setPostDeleted] = useState(false);
+  const [postDeleted,setPostDeleted] = useState(false);
 
   useEffect(() => {
     if (!currentUser?._id) return;
