@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react"
 import moment from 'moment';
+import { FaThumbsUp } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
-function ShowComments({comments}) {
 
+function ShowComments({comments,onLike}) {
+  const {currentUser} = useSelector(state=>state.user);
   const [user,setUser] = useState({});
 
   useEffect(()=>{
@@ -13,8 +16,6 @@ function ShowComments({comments}) {
         const data = await res.json();
         if(res.ok){
           setUser(data);
-  
-          
         }
 
       } catch (error) {
@@ -32,6 +33,17 @@ function ShowComments({comments}) {
       </div>
       <div className='py-1 px-10 text-gray-300 '>
         <p>{comments.content}</p>
+      </div>
+      <div className={`flex gap-1 text-sm text-gray-500 font-light hover:text-blue-600 
+      items-center py-1 px-10 ${
+        currentUser && comments.likes.includes(currentUser._id) && 'text-blue-600!'} `}>
+        <p className="text-gray-300 pr-2"> {comments.numberOfLikes}</p>
+        <FaThumbsUp/>
+          <button onClick={()=>onLike(comments._id)}
+            className="cursor-pointer">
+            {currentUser && comments.likes.includes(currentUser._id) ? 'Liked' : 'Like' }
+          </button>
+          
       </div>
     </div>
   )

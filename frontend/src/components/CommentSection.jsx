@@ -1,6 +1,6 @@
 import { useState,useEffect } from 'react';
 import { useSelector} from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import ShowComments from './ShowComments';
 
 function CommentSection({postId}) {
@@ -11,6 +11,7 @@ function CommentSection({postId}) {
     const [commentError,setCommentError] = useState(null);
     const [showComments,setShowComments] = useState(null);
 
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -65,11 +66,37 @@ function CommentSection({postId}) {
        }, [commentAdded, commentError]);
 
 
+    const handleLike = async (commentId)=>{
+        try {
+            
+            if(!currentUser){
+                navigate('/sign-in')
+            }
+            const res = await fetch(`/api/comment/like-comment/${commentId}`,
+                {   method: 'PUT',credentials: 'include',   });
+            if (res.ok) {
+                const data = await res.json();
+                setShowComments(
+                    showComments.map((comment) =>
+                    comment._id === commentId
+                    ? {...comment,
+                        likes: data.likes,
+                        numberOfLikes: data.likes.length,}
+                    : comment
+                ));
+            }
+
+        } catch (error) {
+            console.log(error);
+            
+        }
+    };
+    
+
   return (
     <div>
         {currentUser ? (
-            <div className='flex p-3 max-w-4xl mx-auto w-full items-center 
-            border-b border-slate-500 '>
+            <div className='flex p-3 max-w-4xl mx-auto w-full items-center  '>
                 <p>Signed in as : @</p>
                 <Link to={'/dashboard?tab=profile'}>  
                 <p className='hover:underline text-sm
@@ -113,7 +140,8 @@ function CommentSection({postId}) {
         {showComments?.length>0 ? (
             showComments.map((comments=>
                 <ShowComments key={comments._id}
-                comments={comments}/>
+                comments={comments}
+                onLike={handleLike} />
             )
         ))
         :(<p className='p-3 max-w-4xl mx-auto w-full'> No comments yet</p>)}
