@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { useSelector} from 'react-redux';
 import { Link } from 'react-router-dom';
+import ShowComments from './ShowComments';
 
 function CommentSection({postId}) {
 
     const{currentUser} = useSelector(state=>state.user);
     const [comment,setComment] = useState('');
+    const [commentAdded,setCommentAdded] = useState(false);
     const [commentError,setCommentError] = useState(null);
+    const [showComments,setShowComments] = useState(null);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -28,12 +32,38 @@ function CommentSection({postId}) {
       const data = await res.json();
       if (res.ok) {
         setComment('');
+        setCommentAdded(true);
         setCommentError(null);
+        setShowComments([data,...showComments])
       }
     } catch (error) {
         setCommentError(error.message);
     }
     };
+
+    useEffect(()=>{
+        const getcomments= async () =>{
+            try {
+                const res = await fetch(`/api/comment/get-comments/${postId}`);
+                if (res.ok) {
+                const data = await res.json();
+                setShowComments(data);}
+            } catch (error) {console.log(error);}
+        };
+        getcomments();
+    },[postId]);
+
+    useEffect(() => {
+       if (commentAdded || commentError) {
+           const timer = setTimeout(() => {
+             setCommentAdded(false);
+             setCommentError(null);
+           }, 6000);
+
+           return () => clearTimeout(timer);
+       }
+       }, [commentAdded, commentError]);
+
 
   return (
     <div>
@@ -47,7 +77,7 @@ function CommentSection({postId}) {
             </div>
         ) : (<div className='flex gap-2 p-3 max-w-4xl mx-auto w-full
         border-b border-slate-500 '>
-                <p>Please login to comment !</p>
+                <p>Please sign in to comment !</p>
                 <Link to={'/sign-in'}>  
                 <p className='hover:underline hover:text-blue-600'> Sign In</p> </Link>
             </div>)
@@ -74,8 +104,19 @@ function CommentSection({postId}) {
             </form>
             
         )}
-        {commentError && <p className='text-red-600 p-3 max-w-4xl mx-auto w-full'>
+        {commentError && <p className='text-red-600 p-2 max-w-4xl mx-auto w-full'>
             *{commentError}</p>}
+        {commentAdded && <p className='text-green-500 p-2 max-w-4xl mx-auto w-full'>
+            Comment added !!</p>}
+        <h1 className='p-3 max-w-4xl mx-auto w-full text-xl font-bold text-gray-300
+        border-b border-slate-500 '>Comments - {showComments?.length}</h1>
+        {showComments?.length>0 ? (
+            showComments.map((comments=>
+                <ShowComments key={comments._id}
+                comments={comments}/>
+            )
+        ))
+        :(<p className='p-3 max-w-4xl mx-auto w-full'> No comments yet</p>)}
     </div>
   )
 }
