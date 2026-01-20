@@ -4,6 +4,7 @@ import DashSidebar from '../components/DashSidebar';
 import DashProfile from '../components/DashProfile';
 import Posts from '../components/Posts';
 import Users from '../components/Users';
+import Comments from '../components/Comments';
 
 
 
@@ -29,6 +30,7 @@ export default function Dashboard() {
       {tab === 'profile' && <DashProfile/>}
       {tab === 'posts' && <Posts/>}
       {tab === 'users' && <Users/>}
+      {tab === 'comments' && <Comments/>}
 
 
     </div>
