@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, TextInput } from "flowbite-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AiOutlineSearch, AiOutlineMenu } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { signOutSuccess } from '../redux/user/userSlice.js';
@@ -17,6 +17,11 @@ export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
   const {theme} = useSelector(stste => stste.theme);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    setProfileOpen(false);
+  }, [location.pathname,location.search]);
 
   const handleSignout = async () => {
       try {
@@ -41,20 +46,18 @@ export default function Header() {
   return (
     <nav className="bg-blue-800 border-b p-1 font-sans min-w-75">
       <div className="flex items-center justify-between w-full">
-        <Link
-          to="/"
-          className="flex items-center gap-0.5 text-sm sm:text-xl font-bold text-white"
-        >
-          <span className="bg-violet-900 px-2 pt-1 pb-1.5 text-white rounded-2xl w-fit">
+        <Link  to="/"
+          className="flex items-center gap-0.5 text-sm 
+          sm:text-xl font-bold text-white">
+          <span className="bg-violet-900 px-2 pt-1 pb-1.5
+           text-white rounded-2xl w-fit">
             Blog
           </span>
           Posts
         </Link>
 
         <form className="hidden md:block">
-          <TextInput
-            type="text"
-            placeholder="search ..."
+          <TextInput  type="text"  placeholder="search ..."
             className="w-full h-10"
             rightIcon={AiOutlineSearch}/>
         </form>
@@ -70,10 +73,10 @@ export default function Header() {
             {!currentUser &&
               <Link to="/sign-up" className="text-white">
               Sign Up
-            </Link>
-            }
-            
+            </Link>}  
+
           </div>
+
           {/*.................. Theme change Button........................... */}
           <Button
             onClick={()=>dispatch(toggleTheme())}
@@ -141,7 +144,7 @@ export default function Header() {
                       onClick={handleSignout}
                       className="w-full px-4 pb-2 text-md text-center
                         text-red-600 hover:bg-gray-300 font-semibold
-                        rounded-md overflow-hidden">
+                        rounded-md overflow-hidden cursor-pointer">
                       Sign out
                     </button>
                   </div>
