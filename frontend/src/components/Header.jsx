@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, TextInput } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineSearch, AiOutlineMenu } from "react-icons/ai";
-import { FaMoon } from "react-icons/fa";
+import { FaMoon, FaSun } from "react-icons/fa";
 import { signOutSuccess } from '../redux/user/userSlice.js';
 
 import { useSelector,useDispatch } from "react-redux";
@@ -15,6 +15,7 @@ export default function Header() {
   const [profileOpen, setProfileOpen] = useState(false);
 
   const { currentUser } = useSelector((state) => state.user);
+  const {theme} = useSelector(stste => stste.theme);
   const navigate = useNavigate();
 
   const handleSignout = async () => {
@@ -55,8 +56,7 @@ export default function Header() {
             type="text"
             placeholder="search ..."
             className="w-full h-10"
-            rightIcon={AiOutlineSearch}
-          />
+            rightIcon={AiOutlineSearch}/>
         </form>
 
         <div className="flex items-center gap-4">
@@ -67,28 +67,48 @@ export default function Header() {
             <Link to="/about" className="text-white">
               About
             </Link>
-            <Link to="/sign-up" className="text-white">
+            {!currentUser &&
+              <Link to="/sign-up" className="text-white">
               Sign Up
             </Link>
+            }
+            
           </div>
           {/*.................. Theme change Button........................... */}
           <Button
             onClick={()=>dispatch(toggleTheme())}
             className="hidden md:inline-flex w-12 h-8
-             transition-transform hover:scale-105"
+             transition-transform hover:scale-105 cursor-pointer"
             color="gray"
-            pill
-          >
-            <FaMoon />
+            pill>
+            {theme === 'dark'?<FaMoon /> : <FaSun/>}
+            
           </Button>
 
+          
+          {showSearch && (
+            <div className="md:hidden">
+              <TextInput  type="text"  placeholder="search ..."
+                className="w-full h-11"/>
+            </div>
+          )}
+          <button
+            onClick={() => setShowSearch(!showSearch)}
+            className="md:hidden text-white text-xl">
+            <AiOutlineSearch />
+          </button>
+
+          {/* Profile icon and content*/}
           {currentUser ? (
-            <div className="relative hidden md:block">
+            <div className="relative block">
               <img
                 src={currentUser.profilePic}
                 alt="profile"
                 className="w-9 h-9 rounded-full cursor-pointer border"
-                onClick={() => setProfileOpen((prev) => !prev)}/>
+                onClick={() => {
+                  setProfileOpen((prev) => !prev);
+                  setOpen(false);
+                  }}/>
 
               {profileOpen && (
                 <div
@@ -112,7 +132,8 @@ export default function Header() {
                       to="/dashboard?tab=profile"
                       className="w-full px-4 py-1 text-md text-center
                        font-semibold hover:bg-gray-300"
-                      onClick={() => setProfileOpen(false)}>
+                      onClick={() => {
+                        setProfileOpen(false);}}>
                       Profile
                     </Link>
 
@@ -128,64 +149,47 @@ export default function Header() {
               )}
             </div>
           ) : (
-            <Link to="/sign-in" className="hidden md:block">
-              <Button className="bg-fuchsia-200 text-blue-950 w-16 h-8 hover:bg-fuchsia-300">
+            <Link to="/sign-in" className="hidden md:block font-semibold">
+              <button className="bg-fuchsia-200 text-blue-950 
+              rounded-full w-15 h-8 hover:bg-fuchsia-300 cursor-pointer">
                 SignIn
-              </Button>
+              </button>
             </Link>
           )}
 
+      {/* Small screen hamburger open*/}
           <button
-            onClick={() => setShowSearch(!showSearch)}
-            className="md:hidden text-white text-xl"
-          >
-            <AiOutlineSearch />
-          </button>
-
-          <button
-            onClick={() => setOpen(!open)}
-            className="md:hidden text-white text-xl"
-          >
+            onClick={() => {
+              setOpen(!open);
+              setProfileOpen(false);
+            }}
+            className="md:hidden text-white text-3xl">
             <AiOutlineMenu />
           </button>
         </div>
       </div>
 
-      {showSearch && (
-        <div className="md:hidden mt-2">
-          <TextInput
-            type="text"
-            placeholder="search ..."
-            className="w-full h-10"
-          />
-        </div>
-      )}
-
+      
       {open && (
         <div className="md:hidden mt-2 font-semibold flex flex-col gap-3 border-t border-blue-600 pt-2 bg-gray-900 items-center">
           <Link to="/" onClick={() => setOpen(false)} className="text-white">
             Home
           </Link>
-          <Link
-            to="/about"
+          <Link  to="/about"
             onClick={() => setOpen(false)}
-            className="text-white"
-          >
+            className="text-white">
             About
           </Link>
           <Link
             to="/sign-up"
             onClick={() => setOpen(false)}
-            className="text-white"
-          >
-            Sign Up
+            className="text-white">
+            {!currentUser && "Sign Up"} 
           </Link>
-          <Link
-            to="/sign-in"
+          <Link  to="/sign-in"
             onClick={() => setOpen(false)}
-            className="text-white"
-          >
-            Sign In
+            className="text-white">
+            {!currentUser && "Sign In"}
           </Link>
         </div>
       )}

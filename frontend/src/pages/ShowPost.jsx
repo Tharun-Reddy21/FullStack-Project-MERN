@@ -42,7 +42,7 @@ function ShowPost() {
       </div>
     );
   return (
-    <main className="p-3 flex flex-col max-w-6xl mx-auto min-h-screen">
+    <main className="p-3 flex flex-col max-w-6xl mx-auto min-h-screen md:border border-slate-500 my-5">
 
       <h1 className="text-3xl mt-10 p-3 text-center font-serif max-w-4xl mx-auto lg:text-4xl">
         {post && post.title} </h1>
