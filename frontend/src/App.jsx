@@ -20,6 +20,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import CreatePost from "./pages/CreatePost";
 import ShowPost from "./pages/ShowPost";
 import ScrollTop from "./components/ScrollTop";
+import Search from "./pages/Search";
 
 function OAuthRedirectHandler() {
   const auth = getAuth(app);
@@ -77,6 +78,7 @@ function App() {
        
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/search" element={<Search />} />
 
         <Route path="/post/:postSlug" element={<ShowPost />} />
         

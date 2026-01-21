@@ -14,10 +14,36 @@ export default function Header() {
   const [showSearch, setShowSearch] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
+  
+
   const { currentUser } = useSelector((state) => state.user);
   const {theme} = useSelector(stste => stste.theme);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [searchTerm,setSearchTerm] = useState('');
+
+  useEffect(()=>{
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get('searchTerm');
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+    
+
+  },[location.search]);
+
+  const handleSearchSubmit = async (e)=>{
+
+    e.preventDefault();
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set('searchTerm',searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+
+  }
+
+  
 
   useEffect(() => {
     setProfileOpen(false);
@@ -41,7 +67,7 @@ export default function Header() {
       } catch (err) {
         console.log(err.message);
       }
-    };
+  };
 
   return (
     <nav className="bg-blue-800 border-b p-1 font-sans min-w-75">
@@ -56,9 +82,11 @@ export default function Header() {
           Posts
         </Link>
 
-        <form className="hidden md:block">
+        <form className="hidden md:block" onSubmit={handleSearchSubmit}>
           <TextInput  type="text"  placeholder="search ..."
+            value={searchTerm}
             className="w-full h-10"
+            onChange={(e)=>setSearchTerm(e.target.value)}
             rightIcon={AiOutlineSearch}/>
         </form>
 
@@ -77,7 +105,7 @@ export default function Header() {
 
           </div>
 
-          {/*.................. Theme change Button........................... */}
+          {/* Theme change Button */}
           <Button
             onClick={()=>dispatch(toggleTheme())}
             className="hidden md:inline-flex w-12 h-8

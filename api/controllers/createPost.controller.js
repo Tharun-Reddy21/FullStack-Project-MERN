@@ -46,7 +46,7 @@ export const getPosts = async (req, res, next) => {
  
     const startIndex = Math.max(parseInt(req.query.startIndex) || 0, 0);
     const limit = Math.min(Math.max(parseInt(req.query.limit) || 6, 1), 50);
-    const sortOrder = req.query.order === 'asc'? 1 : -1;
+    const sortOrder = req.query.sort === 'desc'? -1 : 1;
 
     const blogs = await Post.find({
       ...(req.query.userId && {userId : req.query.userId}),
