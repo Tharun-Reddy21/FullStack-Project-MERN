@@ -34,7 +34,6 @@ function Comments() {
     fetchComments();
   }, [currentUser?.role==='admin']);
 
-  //console.log(comments);
   
 
   const handleShowMore = async () => {
@@ -112,7 +111,7 @@ function Comments() {
                     {new Date(comment.updatedAt).toLocaleDateString()}
                   </td>
 
-                  <td className="border p-2">{comment.content}</td>
+                  <td className="border p-2 break-all">{comment.content}</td>
 
                   <td className="border p-2">{comment.numberOfLikes}</td>
 
@@ -127,7 +126,7 @@ function Comments() {
                         setCommentIdToDelete(comment._id);
                         setCommentDeleted(false);
                       }}
-                      className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+                      className="bg-red-600 text-white px-3 py-1 cursor-pointer rounded hover:bg-red-700">
                       Delete
                     </button>
                   </td>

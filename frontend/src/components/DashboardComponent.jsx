@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { HiAnnotation, HiDocumentText, HiOutlineUserGroup } from 'react-icons/hi';
+
 
 function DashboardComponent() {
   const { currentUser } = useSelector((state) => state.user);
@@ -90,7 +92,7 @@ function DashboardComponent() {
 
       {/* {users} */}
       <section>
-        <h2 className="text-xl font-semibold mb-3">Recent Users</h2>
+        <h2 className="text-xl font-semibold mb-3 flex items-center gap-2.5">Recent Users <HiOutlineUserGroup /></h2>
 
         <TableWrapper>
           <UsersTable users={users} />
@@ -107,7 +109,8 @@ function DashboardComponent() {
 
       {/* {posts} */}
       <section>
-        <h2 className="text-xl font-semibold mb-3">Recent Posts</h2>
+        <h2 className="text-xl font-semibold mb-3 flex items-center gap-2.5">
+          Recent Posts <HiDocumentText/></h2>
 
         <TableWrapper>
           <PostsTable posts={posts} />
@@ -124,7 +127,8 @@ function DashboardComponent() {
 
       {/* {comments} */}
       <section>
-        <h2 className="text-xl font-semibold mb-3">Recent Comments</h2>
+        <h2 className="text-xl font-semibold mb-3 flex items-center gap-2.5
+        ">Recent Comments <HiAnnotation /></h2>
 
         <TableWrapper>
           <CommentsTable comments={comments} />

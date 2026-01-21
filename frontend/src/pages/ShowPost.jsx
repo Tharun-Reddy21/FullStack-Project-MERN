@@ -82,7 +82,7 @@ function ShowPost() {
           p-3 flex flex-col max-w-6xl mx-auto
          bg-gray-300 text-gray-800 hover:bg-gray-600 hover:text-gray-300
          transition-all duration-100 ease-out shadow-gray-300 shadow-sm font-bold">
-          {post && post.category}
+          {post && (post.category==='undefined' ?"uncategorised":post.category)}
         </button>
       </Link>
 

@@ -25,7 +25,7 @@ export const createPost = async (req, res, next) => {
 
     const newPost = new Post({
       title: req.body.title,
-      category: req.body.category,
+      category: req.body.category || "uncategorised",
       content: req.body.content,
       image: result.secure_url,
       slug,

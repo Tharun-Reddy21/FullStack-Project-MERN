@@ -115,7 +115,7 @@ function Users() {
                     setUserIdToDelete(user._id);
                     setUserDeleted(false);
                   }}
-                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+                    className="bg-red-600 text-white px-3 py-1 cursor-pointer rounded hover:bg-red-700">
                     Delete </button>
                 </td>
               </tr>
