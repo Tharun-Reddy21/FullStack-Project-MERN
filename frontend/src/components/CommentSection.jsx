@@ -59,6 +59,7 @@ function CommentSection({postId}) {
         getcomments();
     },[postId]);
 
+
     //useEffect to hide success or error messages after 6 seconds
     useEffect(() => {
        if (commentAdded || commentError || commentDeleted ||commentDeletedError) {

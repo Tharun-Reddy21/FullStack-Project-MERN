@@ -57,7 +57,7 @@ export default function SignIn() {
         return;
       }
 
-      console.log("Sign In success:", result);
+      //console.log("Sign In success:", result);
       if(data.ok){
         dispatch(signInSuccess(result));
         navigate('/');

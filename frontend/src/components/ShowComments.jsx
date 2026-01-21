@@ -23,7 +23,9 @@ function ShowComments({comments,onLike,onDelete}) {
       }
     };
     getUser();
-  },[comments])
+  },[comments.userId])
+
+
   return (
     <div className='p-4 max-w-4xl mx-auto w-full text-gray-300 border-b border-slate-500'>
       <div className="flex gap-2 items-center ">
@@ -31,7 +33,7 @@ function ShowComments({comments,onLike,onDelete}) {
         <p className="font-semibold pr-5">{user ? `@${user.username}` : 'Anonymous user'}</p>
         <p className="text-gray-400 text-sm">{moment(comments.createdAt).fromNow()}</p>
       </div>
-      <div className='py-1 px-10 text-gray-300 '>
+      <div className={`py-1 px-10 text-gray-300  wrap-break-word`} >
         <p>{comments.content}</p>
       </div>
       <div className={`flex gap-1 text-sm text-gray-500 font-light 
