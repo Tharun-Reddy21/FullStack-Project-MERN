@@ -21,6 +21,7 @@ function About() {
         <li>Users to search and find the mentor and developers</li>
         <li>Improve UI stability and experience</li>
         <li>Optimize api fetches</li>
+        <li>Add more Admin functionalities</li>
       </ol>
     </div>
   );

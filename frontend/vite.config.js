@@ -4,7 +4,9 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  //server proxy for backend to fetch data 
+  base: '/',  
+
+  // server proxy for backend to fetch data 
   server: {
     proxy: {
       "/api": {
@@ -13,5 +15,6 @@ export default defineConfig({
       },
     },
   },
-  plugins: [tailwindcss(), react() ],
+
+  plugins: [tailwindcss(), react()],
 })
