@@ -11,6 +11,9 @@
     "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
 
   },
+  "engines": {
+    "node": ">=18"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Tharun-Reddy21/FullStack-Project-MERN.git"
