@@ -9,7 +9,9 @@ import commentRouter from "./routes/comment.routes.js";
 
 import cookieParser from "cookie-parser";
 
-// import path from "path";
+import path from "path";
+
+const __dirname = path.resolve();
 
 dotenv.config({ quiet: true });
 
@@ -24,6 +26,14 @@ app.use("/api/auth", authRouter);
 app.use("/api/post", postRouter);
 app.use("/api/comment", commentRouter);
 
+
+//for deploying to get pathname of project and frontend
+
+app.use(express.static(path.join(__dirname,'/frontend/dist')));
+
+app.get('*',(req,res)=>{
+  res.sendFile(path.join(__dirname,'frontend','dist','index.html'));
+});
 
 //for errors 
 app.use((err, req, res, next) => {
