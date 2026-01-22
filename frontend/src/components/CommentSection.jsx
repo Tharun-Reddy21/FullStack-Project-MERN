@@ -171,8 +171,7 @@ function CommentSection({postId}) {
         {commentDeleted && <p className='text-green-500 p-2 max-w-4xl mx-auto w-full'>
             Comment deleted !!</p>}
 
-        <h1 className='p-3 max-w-4xl mx-auto w-full text-xl font-bold text-gray-300
-        border-b border-slate-500 '>Comments - {showComments?.length}</h1>
+        <h1 className='p-3 max-w-4xl mx-auto w-full text-xl font-bold text-gray-300'>Comments - {showComments?.length}</h1>
         {showComments?.length>0 ? (
             showComments.map((comments=>
                 <ShowComments key={comments._id}

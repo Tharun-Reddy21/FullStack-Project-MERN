@@ -37,7 +37,7 @@ export default function Header() {
 
     e.preventDefault();
     const urlParams = new URLSearchParams(location.search);
-    urlParams.set('searchTerm',searchTerm);
+    urlParams.set('searchTerm',(searchTerm ===null ?'' :searchTerm));
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
 
@@ -84,7 +84,7 @@ export default function Header() {
 
         <form className="hidden md:block" onSubmit={handleSearchSubmit}>
           <TextInput  type="text"  placeholder="search ..."
-            value={searchTerm}
+            value={searchTerm===null?'':searchTerm}
             className="w-full h-10"
             onChange={(e)=>setSearchTerm(e.target.value)}
             rightIcon={AiOutlineSearch}/>

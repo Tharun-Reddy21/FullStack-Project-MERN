@@ -13,7 +13,7 @@ function PostCard({post}) {
             <p className="font-serif overflow-hidden p-2">{post.title}</p>
             <div className="flex justify-around py-2">
             <span className="font-mono text-sm bg-gray-600 overflow-auto
-             rounded-full p-1">{post.category}</span>
+             rounded-full p-1">{post.category==='undefined'? 'uncategorised' : post.category}</span>
             <Link className="text-sm font-semibold transition-all ease-in
              hover:text-gray-950 " to={`/post/${post.slug}`}>Read blog ...</Link>
             </div>

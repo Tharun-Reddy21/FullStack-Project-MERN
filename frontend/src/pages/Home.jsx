@@ -4,12 +4,17 @@ import PostCard from '../components/PostCard';
 
 export default function Home() {
   const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBlogs = async () => {
-      const res = await fetch('/api/post/get-posts?limit=9');
-      const data = await res.json();
-      setBlogs(data.blogs || data.posts || []);
+      try {
+        const res = await fetch('/api/post/get-posts?limit=9');
+        const data = await res.json();
+        setBlogs(data.blogs || []);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchBlogs();
   }, []);
@@ -25,7 +30,7 @@ export default function Home() {
       </p>
 
       <Link
-        to="/search"
+        to={ `/search?searchTerm= `}
         className="py-2.5 px-5 text-blue-500 hover:text-blue-600 text-sm">
         View all blogs
       </Link>
@@ -35,26 +40,27 @@ export default function Home() {
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6  px-5">
-		      {blogs.length > 0 ? (
-            blogs.map((blog) => (
-              <PostCard key={blog._id || blog.id} post={blog} />
-            ))
-          ) : (
-            <p className="text-gray-400 px-4 col-span-full">
-              No blogs found.
-            </p>
-		      )}
-	    </div>
-      <Link to="/search"
+        {loading ? (
+          <p className="text-gray-300 px-4 col-span-full">
+            Loading blogs ...
+          </p>
+        ) : blogs.length > 0 ? (
+          blogs.map((blog) => (
+            <PostCard key={blog._id || blog.id} post={blog} />
+          ))
+        ) : (
+          <p className="text-gray-400 px-4 col-span-full">
+            No blogs found.
+          </p>
+        )}
+      </div>
+
+      <Link
+        to={ `/search?searchTerm= `}
         className="flex mx-auto my-5 py-1.5 px-3 w-fit justify-center rounded-lg ring-1 ring-blue-500
              text-blue-500 hover:bg-blue-500 hover:text-gray-200 transition">
-          View all blogs
+        View all blogs
       </Link>
-
-
-
-
-
     </div>
   );
 }

@@ -27,7 +27,7 @@ function ShowComments({comments,onLike,onDelete}) {
 
 
   return (
-    <div className='p-4 max-w-4xl mx-auto w-full text-gray-300 border-b border-slate-500'>
+    <div className='p-4 max-w-4xl mx-auto w-full text-gray-300 border-t  border-slate-500'>
       <div className="flex gap-2 items-center ">
         <img className="w-8 h-8 rounded-full" src={user.profilePic} alt={user.username} />
         <p className="font-semibold pr-5">{user ? `@${user.username}` : 'Anonymous user'}</p>

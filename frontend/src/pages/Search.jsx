@@ -68,7 +68,7 @@ export default function Search() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const urlParams = new URLSearchParams(location.search);
-    urlParams.set('searchTerm', sidebarData.searchTerm);
+    urlParams.set('searchTerm', sidebarData.searchTerm===null?'':sidebarData.searchTerm);
     urlParams.set('sort', sidebarData.sort);
     urlParams.set('category', sidebarData.category);
     navigate(`/search?${urlParams.toString()}`);
@@ -96,7 +96,8 @@ export default function Search() {
               Search Term :
             </label>
             <input
-              className='bg-gray-900 text-gray-100 border border-gray-700 rounded px-3 py-2'
+              className='bg-gray-900 text-gray-100 border border-gray-700 w-30 rounded py-2
+              sm:w-fit'
               placeholder='Search...'
               id='searchTerm'
               type='text'
